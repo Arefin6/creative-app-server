@@ -27,6 +27,39 @@ client.connect(err => {
   const adminsCollection = client.db("creativeAgency").collection("admins");
   const reviewsCollection = client.db("creativeAgency").collection("reviews");
   const servicesCollection = client.db("creativeAgency").collection("services");
+    
+
+   app.get('/orderList',(req,res) =>{
+       ordersCollection.find({})
+       .toArray((err,documents) =>{
+           res.send(documents);
+       })
+   })
+
+        app.get('/serviceList',(req,res) =>{
+            
+            ordersCollection.find({email:req.query.email})
+            .toArray((err,documents) =>{
+                res.send(documents);
+            })
+        })
+
+        app.get('/allReview',(req,res) =>{
+            
+            reviewsCollection.find({})
+            .toArray((err,documents) =>{
+                res.send(documents);
+            })
+        })
+
+        app.get('/allService',(req,res) =>{
+            
+            servicesCollection.find({})
+            .toArray((err,documents) =>{
+                res.send(documents);
+            })
+        })
+
 
    app.post('/addAdmin',(req,res) =>{
       const adminEmail =req.body;
@@ -87,7 +120,7 @@ client.connect(err => {
             })
     })
 
-
+    
 
     app.post('/isAdmin',(req,res) =>{
         const email =req.body.email;
