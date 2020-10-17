@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 // const fileUpload = require('express-fileupload');
 const MongoClient = require('mongodb').MongoClient;
+const objectId = require('mongodb').ObjectID;
 require('dotenv').config();
 
 const app = express();
@@ -21,13 +22,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
     true });
 client.connect(err => {
   const ordersCollection = client.db("creativeAgency").collection("orders");
+  const adminsCollection = client.db("creativeAgency").collection("admins");
 
-   app.get('/allorders',(req,res)=>{
-       ordersCollection.find({})
-       .toArray((err,documents)=>{
-           res.send(documents);
-       })
+   app.post('/addAdmin',(req,res) =>{
+      const adminEmail =req.body;
+      adminsCollection.insertOne(adminEmail)
+      .then(result =>{
+          res.send(result.insertedCount>0);
+      })
    })
+   app.post('/isAdmin',(req,res) =>{
+    const email =req.body.email;
+    adminsCollection.find({email:email})
+    .toArray((err,admins)=>{
+        res.send(admins.length>0);
+    })
+ });
  
 });
 
